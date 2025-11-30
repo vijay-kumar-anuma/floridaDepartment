@@ -1,0 +1,35 @@
+<div class="d-flex justify-content-center align-items-center vh-100 bg-light">
+  <div class="card p-4" style="width: 350px;">
+    <h3 class="text-center mb-3">Login</h3>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input type="email" id="email" class="form-control" formControlName="email" placeholder="Enter email">
+        <div *ngIf="submitted && loginForm.controls['email'].errors" class="text-danger mt-1">
+          <small *ngIf="loginForm.controls['email'].errors['required']">Email is required.</small>
+          <small *ngIf="loginForm.controls['email'].errors['email']">Invalid email format.</small>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <label for="password" class="form-label">Password</label>
+        <input type="password" id="password" class="form-control" formControlName="password"
+          placeholder="Enter password">
+        <div *ngIf="submitted && loginForm.controls['password'].errors" class="text-danger mt-1">
+          <small *ngIf="loginForm.controls['password'].errors['required']">Password is required.</small>
+          <small *ngIf="loginForm.controls['password'].errors['minlength']">
+            Password must be at least 6 characters.
+          </small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+    <!-- Registration Link -->
+    <div class="text-center mt-3">
+      <span>Don't have an account? </span>
+      <a href="#" routerLink="/auth/registration">Register</a>
+    </div>
+  </div>
+</div>

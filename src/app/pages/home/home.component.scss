@@ -1,0 +1,36 @@
+.user-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #d9e6f2;
+  color: #003e7e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+.card {
+  border-radius: 8px;
+}
+
+.btn-info {
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.pagination .page-item.disabled .page-link {
+  pointer-events: none;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.pagination .page-item.active .page-link {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: white;
+}
