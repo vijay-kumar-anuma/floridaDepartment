@@ -144,15 +144,15 @@ export class HomeComponent {
     }
   }
 
-updateDisplayedPackets() {
-  this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
+  updateDisplayedPackets() {
+    this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
 
-  const start = (this.currentPage - 1) * this.itemsPerPage;
-  const end = start + this.itemsPerPage;
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
 
-  this.displayedPackets = this.filterDisplayedPackets.slice(start, end);
-  this.totalPages = Math.ceil(this.filterDisplayedPackets.length / this.itemsPerPage);
-}
+    this.displayedPackets = this.filterDisplayedPackets.slice(start, end);
+    this.totalPages = Math.ceil(this.filterDisplayedPackets.length / this.itemsPerPage);
+  }
 
 
 
@@ -161,105 +161,82 @@ updateDisplayedPackets() {
     return Array(this.totalPages).fill(0).map((_, i) => i + 1);
   }
 
+  filterTable() {
+    const f = this.searchParams.value;
 
-filterTable() {
-  const f = this.searchParams.value;
+    let filtered = this.filterLast4Days([...this.packets]);
 
-  // Always use packets already updated in ngOnInit
-  let filtered = this.filterLast4Days([...this.packets]);
+    const filterReceived = this.parseAnyDate(f.received);
+    const filterServed = this.parseAnyDate(f.served);
 
-  filtered = filtered.filter(item => {
-    return (
-      (!f.case || item.case.toLowerCase().includes(f.case.toLowerCase())) &&
-      (!f.plaintiff || item.plaintiff.toLowerCase().includes(f.plaintiff.toLowerCase())) &&
-      (!f.company || item.company.toLowerCase().includes(f.company.toLowerCase())) &&
-      (!f.received || new Date(item.received) >= new Date(f.received)) &&
-      (!f.served || new Date(item.served) <= new Date(f.served))
-    );
-  });
+    filtered = filtered.filter(item => {
+      const receivedDate = this.parseAnyDate(item.received);
+      const servedDate = this.parseAnyDate(item.served);
 
-  this.filterDisplayedPackets = filtered;
-  this.currentPage = 1;
-  this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+      return (
+        (!f.case || item.case.toLowerCase().includes(f.case.toLowerCase())) &&
+        (!f.plaintiff || item.plaintiff.toLowerCase().includes(f.plaintiff.toLowerCase())) &&
+        (!f.company || item.company.toLowerCase().includes(f.company.toLowerCase())) &&
+        (!filterReceived || (receivedDate && receivedDate >= filterReceived)) &&
+        (!filterServed || (servedDate && servedDate <= filterServed))
+      );
+    });
 
-  this.displayedPackets = filtered.slice(0, this.itemsPerPage);
-}
+    this.filterDisplayedPackets = filtered;
+    this.currentPage = 1;
+    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+    this.displayedPackets = filtered.slice(0, this.itemsPerPage);
+  }
+  updateDates(data: any[]) {
+    const today = new Date();
+    for (let i = 0; i < data.length; i++) {
+      const dayOffset = Math.floor(i / 2);
+      const receivedDate = new Date();
+      receivedDate.setDate(today.getDate() - dayOffset);
+      const servedDate = new Date(receivedDate);
+      servedDate.setDate(receivedDate.getDate() + 1);
+      const format = (d: Date) =>
+        `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`;
 
-
-updateDates(data: any[]) {
-  const today = new Date();
- 
-  for (let i = 0; i < data.length; i++) {
-    const dayOffset = Math.floor(i / 2); // groups of 2
- 
-    // received date = today - offset
-    const receivedDate = new Date();
-    receivedDate.setDate(today.getDate() - dayOffset);
- 
-    // served date = received + 1 day (still correct sequence)
-    const servedDate = new Date(receivedDate);
-    servedDate.setDate(receivedDate.getDate() + 1);
- 
-    const format = (d: Date) =>
-      `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`;
- 
-    data[i].received = format(receivedDate);
-    data[i].served = format(servedDate);
+      data[i].received = format(receivedDate);
+      data[i].served = format(servedDate);
+    }
+    return data;
   }
 
- 
-  return data;
-}
+  filterLast4Days(data: any[]) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
+    const fourDaysAgo = new Date(today);
+    fourDaysAgo.setDate(today.getDate() - 4);
 
-
- 
-filterLast4Days(data: any[]) {
-  const today = new Date();
-  const fourDaysAgo = new Date(today);
-  fourDaysAgo.setDate(today.getDate() - 4);
-
-  return data.filter(d => {
-    const served = new Date(d.served);
-    return served >= fourDaysAgo && served <= today;
-  });
-}
-
-
-
-
- ngOnInit() {
-  this.packets = this.updateDates([...this.packets]);  // only once!
-  this.updateDisplayedPackets();
-}
-
-
-
-
-
+    return data.filter(d => {
+      const served = this.parseAnyDate(d.served);
+      return served && served >= fourDaysAgo && served <= today;
+    });
+  }
+  ngOnInit() {
+    this.packets = this.updateDates([...this.packets]);  // only once!
+    this.updateDisplayedPackets();
+  }
 
   clear() {
     this.searchParams.reset();
-    this.filterDisplayedPackets = [...this.displayedPackets];
+    this.currentPage = 1;
+    this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
+    this.updateDisplayedPackets();
   }
-
-
   // Select All Toggle
   toggleSelectAll(event: any) {
     const checked = event.target.checked;
     this.displayedPackets.forEach(p => p.selected = checked);
-    this.updateDisplayedPackets();
+
   }
 
-
   downloadAsExcel() {
-
-
-    // Add XLS records that were selected
     const selectedXlsRecords = this.displayedPackets.filter(x => x.selected);
-    // Convert JSON to worksheet
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedXlsRecords);
-
     const workbook: XLSX.WorkBook = {
       Sheets: { 'Data': worksheet },
       SheetNames: ['Data']
@@ -274,21 +251,16 @@ filterLast4Days(data: any[]) {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
 
-    // Create date string (YYYY-MM-DD)
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
 
-    // Filename with date
     const fileName = `data_${formattedDate}.xlsx`;
-    // const fileName = `data_last4days_${formattedDate}.xlsx`;
 
     saveAs(blob, fileName);
   }
 
-
   onFileSelected(event: any, fileUploadModal: any) {
     const file: File = event.target.files[0];
-
     if (file) {
       this.selectedFile = file;
       this.fileName = file.name;
@@ -332,29 +304,45 @@ filterLast4Days(data: any[]) {
       };
     }
 
-    // Add XLS records that were selected
     const selectedXlsRecords = this.xlspackets.filter(x => x.selected);
 
     recordsToInsert.push(...selectedXlsRecords);
 
-    // Insert at the top of main list
     this.packets.unshift(...recordsToInsert);
 
-    // Recalculate pagination
     this.totalPages = Math.ceil(this.packets.length / this.itemsPerPage);
     this.updateDisplayedPackets();
 
-    // Close modal
     this.modalRef.close();
     window.scrollTo(0, 0);
   }
-
-
   logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     sessionStorage.clear();
     this.router.navigate(['/auth/login']);
+  }
+  parseAnyDate(dateStr: string): Date | null {
+    if (!dateStr) return null;
+
+    // YYYY-MM-DD
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
+      return new Date(dateStr + "T00:00:00");
+    }
+
+    // DD-MM-YYYY
+    if (/^\d{2}-\d{2}-\d{4}$/.test(dateStr)) {
+      const [dd, mm, yyyy] = dateStr.split('-');
+      return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+    }
+
+    // MM/DD/YYYY
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(dateStr)) {
+      const [mm, dd, yyyy] = dateStr.split('/');
+      return new Date(`${yyyy}-${mm}-${dd}T00:00:00`);
+    }
+
+    return null;
   }
 
 }
