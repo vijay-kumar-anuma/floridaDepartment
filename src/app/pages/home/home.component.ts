@@ -180,9 +180,32 @@ filterTable() {
     );
   });
 
+
   this.currentPage = 1;
   
 }
+
+filterLast4Days() {
+  const today = new Date();
+  
+  // subtract 4 days
+  const fourDaysAgo = new Date();
+  fourDaysAgo.setDate(today.getDate() - 4);
+
+  this.filterDisplayedPackets = this.packets.filter(packet => {
+    const packetServed = new Date(packet.served);
+    return packetServed >= fourDaysAgo && packetServed <= today;
+  });
+
+  this.currentPage = 1;
+  
+}
+
+ngOnInit() {
+  this.filterLast4Days();   // only last 4 days shown initially
+}
+
+
 
 
   clear() {
