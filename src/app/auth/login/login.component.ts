@@ -7,10 +7,11 @@ import { Router } from '@angular/router';
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss'
 })
-
 export class LoginComponent {
+
   loginForm!: FormGroup;
   submitted = false;
+  showModal = false;
 
   constructor(private fb: FormBuilder, private router: Router) {
     this.loginForm = this.fb.group({
@@ -21,11 +22,20 @@ export class LoginComponent {
 
   onSubmit() {
     this.submitted = true;
+
     if (this.loginForm.valid) {
       console.log('Login data', this.loginForm.value);
-      // Call your authentication service here
-       this.router.navigate(['/pages/home']);
+      this.showModal = true;
     }
   }
- 
+
+  agree() {
+    this.showModal = false;
+    this.router.navigate(['/pages/home']);
+  }
+
+  disagree() {
+    this.showModal = false;
+    this.router.navigate(['/auth/login']);
+  }
 }

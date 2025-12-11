@@ -18,10 +18,9 @@
         <li class="nav-item"><a class="nav-link" routerLink="/change-password">Change Password</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/faq">FAQ’s</a></li>
         <li class="nav-item"><a class="nav-link" routerLink="/contact-us">Contact Us</a></li>
-        <li class="nav-item"><a class="nav-link text-warning" routerLink="/logout">Log Out</a></li>
+        <li class="nav-item"><a class="nav-link text-warning" routerLink="/logout" (click)="logout()">Log Out</a></li>
 
         <li class="nav-item ms-3 d-none d-lg-block">
-          <div class="user-circle">{{ userInitials }}</div>
         </li>
       </ul>
     </div>
@@ -70,7 +69,7 @@
   <!-- TABLE -->
   <div class="table-responsive">
     <table class="table table-bordered table-striped align-middle">
-      <thead class="table-dark">
+      <thead class="table-primary">
         <tr>
           <th>
             <input type="checkbox" (change)="toggleSelectAll($event)">
@@ -88,14 +87,14 @@
         <ng-container *ngIf="filterDisplayedPackets.length > 0; else noData">
           <tr *ngFor="let packet of filterDisplayedPackets">
             <td>
-              <input type="checkbox">
+              <input type="checkbox" [(ngModel)]="packet.selected">
             </td>
             <td>{{ packet.sop }}</td>
             <td>{{ packet.case }}</td>
             <td>{{ packet.plaintiff }}</td>
             <td>{{ packet.company }}</td>
-            <td>{{ packet.received }}</td>
-            <td>{{ packet.served }}</td>
+            <td>{{ packet.received | date: 'M/d/yyyy' }}</td>
+            <td>{{ packet.served | date: 'M/d/yyyy' }}</td>
           </tr>
         </ng-container>
         <ng-template #noData>
@@ -155,51 +154,81 @@
 
 <ng-template #fileUploadModal let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+    <h4 class="modal-title">Upload or Add Records</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
+
   <div class="modal-body">
 
-    <div class="table-responsive">
+    <!-- MANUAL ENTRY FORM -->
+    <h5 class="fw-bold">Add Manual Record</h5>
+
+    <div class="row g-3 border p-3 mb-3 rounded">
+      <div class="col-md-4">
+        <label class="form-label">SOP Number</label>
+        <input class="form-control" [(ngModel)]="manualRecord.sop">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Case Number</label>
+        <input class="form-control" [(ngModel)]="manualRecord.case">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Plaintiff</label>
+        <input class="form-control" [(ngModel)]="manualRecord.plaintiff">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Company</label>
+        <input class="form-control" [(ngModel)]="manualRecord.company">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Date Received</label>
+        <input type="date" class="form-control" [(ngModel)]="manualRecord.received">
+      </div>
+
+      <div class="col-md-4">
+        <label class="form-label">Date Served</label>
+        <input type="date" class="form-control" [(ngModel)]="manualRecord.served">
+      </div>
+    </div>
+
+    <!-- EXISTING XLS RECORDS TABLE -->
+    <div class="table-responsive mt-3">
       <table class="table table-bordered table-striped align-middle">
-        <thead class="table-dark">
+        <thead class="table-primary">
           <tr>
-            <th>
-              <input type="checkbox" (change)="toggleSelectAll($event)">
-            </th>
             <th>SOP Number</th>
             <th>Case Number</th>
             <th>Plaintiff</th>
-            <th>Company To Serve</th>
+            <th>Company</th>
             <th>Date Received</th>
             <th>Date Served</th>
           </tr>
         </thead>
 
         <tbody>
-          <ng-container *ngIf="xlspackets.length > 0; else noData">
-            <tr *ngFor="let packet of xlspackets">
-              <td>
-                <input type="checkbox">
-              </td>
-              <td>{{ packet.sop }}</td>
-              <td>{{ packet.case }}</td>
-              <td>{{ packet.plaintiff }}</td>
-              <td>{{ packet.company }}</td>
-              <td>{{ packet.received }}</td>
-              <td>{{ packet.served }}</td>
-            </tr>
-          </ng-container>
-          <ng-template #noData>
-            <tr>
-              <td colspan="7">No Data Found...</td>
-            </tr>
-          </ng-template>
+          <tr *ngFor="let packet of xlspackets">
+            <td>{{ packet.sop }}</td>
+            <td>{{ packet.case }}</td>
+            <td>{{ packet.plaintiff }}</td>
+            <td>{{ packet.company }}</td>
+            <td>{{ packet.received }}</td>
+            <td>{{ packet.served }}</td>
+          </tr>
+
+          <tr *ngIf="xlspackets.length === 0">
+            <td colspan="7" class="text-center">No File Records Loaded</td>
+          </tr>
         </tbody>
       </table>
     </div>
+
   </div>
+
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-primary" (click)="addRecrods()">Add records</button>
+    <button type="button" class="btn btn-outline-primary" (click)="addRecords()">Add Records</button>
   </div>
 </ng-template>

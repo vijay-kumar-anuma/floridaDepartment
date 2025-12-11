@@ -3,22 +3,32 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrl: './home.component.scss'
+  styleUrls: ['./home.component.scss']
 })
+
 export class HomeComponent {
 
   modalRef: any;
   searchParams!: FormGroup;
+  manualRecord = {
+  sop: '',
+  case: '',
+  plaintiff: '',
+  company: '',
+  received: '',
+  served: '',
+};
+
 
   packets = [
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '12/8/2025', served: '12/9/2025', selected: false },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '12/10/2025', served: '12/11/2025', selected: false },
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
@@ -83,6 +93,9 @@ export class HomeComponent {
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: '123 H. MIAMI MEDICAL CEN...', company: '123 RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: '456 XYZ Corp', company: '123 ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: '789ABC Corp', company: '123 XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: '123 H. MIAMI MEDICAL CEN...', company: '123 RESPONSIVE AUTO INS...', received: '12/9/2025', served: '12/10/2025', selected: false },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: '456 XYZ Corp', company: '123 ABC Company', received: '12/10/2025', served: '12/11/2025', selected: false },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: '789ABC Corp', company: '123 XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false }
   ]
 
   currentPage = 1;
@@ -91,13 +104,13 @@ export class HomeComponent {
 
   displayedPackets: any[] = [];
   filterDisplayedPackets: any[] = [];
-  userInitials = 'VK';
+  
 
 
   selectedFile: File | null = null;
   fileName: string = '';
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal) {
+  constructor(private fb: FormBuilder, private modalService: NgbModal, private router: Router) {
     this.searchParams = this.fb.group({
       sop: [''],
       case: [''],
@@ -143,19 +156,34 @@ export class HomeComponent {
   }
 
 
+filterTable() {
+  const { case: caseNum, plaintiff, company, received, served } = this.searchParams.value;
 
-  filterTable() {
-    const searchParams = this.searchParams.value;
-    this.filterDisplayedPackets = this.displayedPackets.filter(item => {
-      return Object.keys(searchParams).every(key => {
-        if (!searchParams[key]) return true;
-        return item[key]
-          ?.toString()
-          .toLowerCase()
-          .includes(searchParams[key].toLowerCase());
-      });
-    });
-  }
+  this.filterDisplayedPackets = this.packets.filter(packet => {
+
+    // Convert table dates to Date objects
+    const packetReceived = new Date(packet.received);
+    const packetServed   = new Date(packet.served);
+
+    // Convert search filter dates to Date objects
+    const filterFrom = received ? new Date(received) : null;
+    const filterTo   = served ? new Date(served) : null;
+
+    return (
+      (!caseNum || packet.case.toLowerCase().includes(caseNum.toLowerCase())) &&
+      (!plaintiff || packet.plaintiff.toLowerCase().includes(plaintiff.toLowerCase())) &&
+      (!company || packet.company.toLowerCase().includes(company.toLowerCase())) &&
+
+      // DATE RANGE FIX
+      (!filterFrom || packetServed >= filterFrom) &&
+      (!filterTo   || packetServed <= filterTo)
+    );
+  });
+
+  this.currentPage = 1;
+  
+}
+
 
   clear() {
     this.searchParams.reset();
@@ -166,35 +194,43 @@ export class HomeComponent {
   // Select All Toggle
   toggleSelectAll(event: any) {
     const checked = event.target.checked;
-    this.packets.forEach(p => p.selected = checked);
+    this.displayedPackets.forEach(p => p.selected = checked);
     this.updateDisplayedPackets();
   }
 
 
-  downloadAsExcel() {
+ downloadAsExcel() {
 
-    // Convert JSON to worksheet
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(this.displayedPackets);
 
-    // Create workbook and add the worksheet
-    const workbook: XLSX.WorkBook = {
-      Sheets: { 'Data': worksheet },
-      SheetNames: ['Data']
-    };
+  // Add XLS records that were selected
+  const selectedXlsRecords = this.displayedPackets.filter(x => x.selected);
+  // Convert JSON to worksheet
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedXlsRecords);
 
-    // Generate Excel file buffer
-    const excelBuffer: any = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array'
-    });
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Data': worksheet },
+    SheetNames: ['Data']
+  };
 
-    // Save the file
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
 
-    saveAs(blob, 'data.xlsx');
-  }
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  // Create date string (YYYY-MM-DD)
+  const today = new Date();
+  const formattedDate = today.toISOString().split('T')[0];
+
+  // Filename with date
+  const fileName = `data_${formattedDate}.xlsx`;
+  // const fileName = `data_last4days_${formattedDate}.xlsx`;
+
+  saveAs(blob, fileName);
+}
 
 
   onFileSelected(event: any, fileUploadModal: any) {
@@ -205,7 +241,7 @@ export class HomeComponent {
       this.fileName = file.name;
     }
 
-    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl' })
+    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop : 'static' })
   }
 
   upload() {
@@ -220,13 +256,52 @@ export class HomeComponent {
     // this.http.post('your-upload-url', formData).subscribe(...)
   }
 
-  addRecrods() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    this.displayedPackets = [...this.xlspackets, ...this.packets].slice(start, end);
-    this.filterDisplayedPackets = [...this.displayedPackets];
-    this.modalRef.close();
-    window.scrollTo(0, 0);
+ addRecords() {
+
+  const recordsToInsert = [];
+
+  // If user manually entered data, push it
+  if (this.manualRecord.sop || this.manualRecord.case || this.manualRecord.plaintiff) {
+    const newManualRecord = {
+      ...this.manualRecord,
+      selected: false
+    };
+    recordsToInsert.push(newManualRecord);
+
+    // Clear manual form
+    this.manualRecord = {
+      sop: '',
+      case: '',
+      plaintiff: '',
+      company: '',
+      received: '',
+      served: '',
+    };
+  }
+
+  // Add XLS records that were selected
+  const selectedXlsRecords = this.xlspackets.filter(x => x.selected);
+
+  recordsToInsert.push(...selectedXlsRecords);
+
+  // Insert at the top of main list
+  this.packets.unshift(...recordsToInsert);
+
+  // Recalculate pagination
+  this.totalPages = Math.ceil(this.packets.length / this.itemsPerPage);
+  this.updateDisplayedPackets();
+
+  // Close modal
+  this.modalRef.close();
+  window.scrollTo(0, 0);
+}
+
+
+  logout(){
+     localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    sessionStorage.clear();
+    this.router.navigate(['/auth/login']);
   }
 
 }

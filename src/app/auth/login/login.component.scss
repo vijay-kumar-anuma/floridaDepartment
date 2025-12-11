@@ -7,3 +7,58 @@ body, html {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 9999;
+}
+
+.modal-box {
+  width: 900px;           
+  max-height: 100vh;       
+  overflow-y: auto;
+  background: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.modal-content-text {
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+.button-row {
+  display: flex;
+  gap: 50px;
+  margin-top: 20px;
+}
+
+.action-btn {
+  flex: 1;
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 0;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+    margin-right: 20px;
+}
+
+.action-btn:hover {
+  background: #0056b3;
+}
+
+
+.action-btn:last-child {
+  margin-right: 0;
+}
+
+
+
