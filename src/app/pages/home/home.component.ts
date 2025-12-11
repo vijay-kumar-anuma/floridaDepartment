@@ -16,13 +16,13 @@ export class HomeComponent {
   modalRef: any;
   searchParams!: FormGroup;
   manualRecord = {
-  sop: '',
-  case: '',
-  plaintiff: '',
-  company: '',
-  received: '',
-  served: '',
-};
+    sop: '',
+    case: '',
+    plaintiff: '',
+    company: '',
+    received: '',
+    served: '',
+  };
 
 
   packets = [
@@ -104,7 +104,7 @@ export class HomeComponent {
 
   displayedPackets: any[] = [];
   filterDisplayedPackets: any[] = [];
-  
+
 
 
   selectedFile: File | null = null;
@@ -144,12 +144,18 @@ export class HomeComponent {
     }
   }
 
-  updateDisplayedPackets() {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    this.displayedPackets = this.packets.slice(start, end);
-    this.filterDisplayedPackets = [...this.displayedPackets];
-  }
+updateDisplayedPackets() {
+  this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
+
+  const start = (this.currentPage - 1) * this.itemsPerPage;
+  const end = start + this.itemsPerPage;
+
+  this.displayedPackets = this.filterDisplayedPackets.slice(start, end);
+  this.totalPages = Math.ceil(this.filterDisplayedPackets.length / this.itemsPerPage);
+}
+
+
+
 
   getPages(): number[] {
     return Array(this.totalPages).fill(0).map((_, i) => i + 1);
@@ -157,53 +163,77 @@ export class HomeComponent {
 
 
 filterTable() {
-  const { case: caseNum, plaintiff, company, received, served } = this.searchParams.value;
+  const f = this.searchParams.value;
 
-  this.filterDisplayedPackets = this.packets.filter(packet => {
+  // Always use packets already updated in ngOnInit
+  let filtered = this.filterLast4Days([...this.packets]);
 
-    // Convert table dates to Date objects
-    const packetReceived = new Date(packet.received);
-    const packetServed   = new Date(packet.served);
-
-    // Convert search filter dates to Date objects
-    const filterFrom = received ? new Date(received) : null;
-    const filterTo   = served ? new Date(served) : null;
-
+  filtered = filtered.filter(item => {
     return (
-      (!caseNum || packet.case.toLowerCase().includes(caseNum.toLowerCase())) &&
-      (!plaintiff || packet.plaintiff.toLowerCase().includes(plaintiff.toLowerCase())) &&
-      (!company || packet.company.toLowerCase().includes(company.toLowerCase())) &&
-
-      // DATE RANGE FIX
-      (!filterFrom || packetServed >= filterFrom) &&
-      (!filterTo   || packetServed <= filterTo)
+      (!f.case || item.case.toLowerCase().includes(f.case.toLowerCase())) &&
+      (!f.plaintiff || item.plaintiff.toLowerCase().includes(f.plaintiff.toLowerCase())) &&
+      (!f.company || item.company.toLowerCase().includes(f.company.toLowerCase())) &&
+      (!f.received || new Date(item.received) >= new Date(f.received)) &&
+      (!f.served || new Date(item.served) <= new Date(f.served))
     );
   });
 
-
+  this.filterDisplayedPackets = filtered;
   this.currentPage = 1;
-  
+  this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
+
+  this.displayedPackets = filtered.slice(0, this.itemsPerPage);
 }
 
-filterLast4Days() {
+
+updateDates(data: any[]) {
   const today = new Date();
-  
-  // subtract 4 days
-  const fourDaysAgo = new Date();
+ 
+  for (let i = 0; i < data.length; i++) {
+    const dayOffset = Math.floor(i / 2); // groups of 2
+ 
+    // received date = today - offset
+    const receivedDate = new Date();
+    receivedDate.setDate(today.getDate() - dayOffset);
+ 
+    // served date = received + 1 day (still correct sequence)
+    const servedDate = new Date(receivedDate);
+    servedDate.setDate(receivedDate.getDate() + 1);
+ 
+    const format = (d: Date) =>
+      `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`;
+ 
+    data[i].received = format(receivedDate);
+    data[i].served = format(servedDate);
+  }
+
+ 
+  return data;
+}
+
+
+
+ 
+filterLast4Days(data: any[]) {
+  const today = new Date();
+  const fourDaysAgo = new Date(today);
   fourDaysAgo.setDate(today.getDate() - 4);
 
-  this.filterDisplayedPackets = this.packets.filter(packet => {
-    const packetServed = new Date(packet.served);
-    return packetServed >= fourDaysAgo && packetServed <= today;
+  return data.filter(d => {
+    const served = new Date(d.served);
+    return served >= fourDaysAgo && served <= today;
   });
-
-  this.currentPage = 1;
-  
 }
 
-ngOnInit() {
-  this.filterLast4Days();   // only last 4 days shown initially
+
+
+
+ ngOnInit() {
+  this.packets = this.updateDates([...this.packets]);  // only once!
+  this.updateDisplayedPackets();
 }
+
+
 
 
 
@@ -222,38 +252,38 @@ ngOnInit() {
   }
 
 
- downloadAsExcel() {
+  downloadAsExcel() {
 
 
-  // Add XLS records that were selected
-  const selectedXlsRecords = this.displayedPackets.filter(x => x.selected);
-  // Convert JSON to worksheet
-  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedXlsRecords);
+    // Add XLS records that were selected
+    const selectedXlsRecords = this.displayedPackets.filter(x => x.selected);
+    // Convert JSON to worksheet
+    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedXlsRecords);
 
-  const workbook: XLSX.WorkBook = {
-    Sheets: { 'Data': worksheet },
-    SheetNames: ['Data']
-  };
+    const workbook: XLSX.WorkBook = {
+      Sheets: { 'Data': worksheet },
+      SheetNames: ['Data']
+    };
 
-  const excelBuffer: any = XLSX.write(workbook, {
-    bookType: 'xlsx',
-    type: 'array'
-  });
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array'
+    });
 
-  const blob = new Blob([excelBuffer], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-  });
+    const blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
 
-  // Create date string (YYYY-MM-DD)
-  const today = new Date();
-  const formattedDate = today.toISOString().split('T')[0];
+    // Create date string (YYYY-MM-DD)
+    const today = new Date();
+    const formattedDate = today.toISOString().split('T')[0];
 
-  // Filename with date
-  const fileName = `data_${formattedDate}.xlsx`;
-  // const fileName = `data_last4days_${formattedDate}.xlsx`;
+    // Filename with date
+    const fileName = `data_${formattedDate}.xlsx`;
+    // const fileName = `data_last4days_${formattedDate}.xlsx`;
 
-  saveAs(blob, fileName);
-}
+    saveAs(blob, fileName);
+  }
 
 
   onFileSelected(event: any, fileUploadModal: any) {
@@ -264,7 +294,7 @@ ngOnInit() {
       this.fileName = file.name;
     }
 
-    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop : 'static' })
+    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' })
   }
 
   upload() {
@@ -279,49 +309,49 @@ ngOnInit() {
     // this.http.post('your-upload-url', formData).subscribe(...)
   }
 
- addRecords() {
+  addRecords() {
 
-  const recordsToInsert = [];
+    const recordsToInsert = [];
 
-  // If user manually entered data, push it
-  if (this.manualRecord.sop || this.manualRecord.case || this.manualRecord.plaintiff) {
-    const newManualRecord = {
-      ...this.manualRecord,
-      selected: false
-    };
-    recordsToInsert.push(newManualRecord);
+    // If user manually entered data, push it
+    if (this.manualRecord.sop || this.manualRecord.case || this.manualRecord.plaintiff) {
+      const newManualRecord = {
+        ...this.manualRecord,
+        selected: false
+      };
+      recordsToInsert.push(newManualRecord);
 
-    // Clear manual form
-    this.manualRecord = {
-      sop: '',
-      case: '',
-      plaintiff: '',
-      company: '',
-      received: '',
-      served: '',
-    };
+      // Clear manual form
+      this.manualRecord = {
+        sop: '',
+        case: '',
+        plaintiff: '',
+        company: '',
+        received: '',
+        served: '',
+      };
+    }
+
+    // Add XLS records that were selected
+    const selectedXlsRecords = this.xlspackets.filter(x => x.selected);
+
+    recordsToInsert.push(...selectedXlsRecords);
+
+    // Insert at the top of main list
+    this.packets.unshift(...recordsToInsert);
+
+    // Recalculate pagination
+    this.totalPages = Math.ceil(this.packets.length / this.itemsPerPage);
+    this.updateDisplayedPackets();
+
+    // Close modal
+    this.modalRef.close();
+    window.scrollTo(0, 0);
   }
 
-  // Add XLS records that were selected
-  const selectedXlsRecords = this.xlspackets.filter(x => x.selected);
 
-  recordsToInsert.push(...selectedXlsRecords);
-
-  // Insert at the top of main list
-  this.packets.unshift(...recordsToInsert);
-
-  // Recalculate pagination
-  this.totalPages = Math.ceil(this.packets.length / this.itemsPerPage);
-  this.updateDisplayedPackets();
-
-  // Close modal
-  this.modalRef.close();
-  window.scrollTo(0, 0);
-}
-
-
-  logout(){
-     localStorage.removeItem('token');
+  logout() {
+    localStorage.removeItem('token');
     localStorage.removeItem('user');
     sessionStorage.clear();
     this.router.navigate(['/auth/login']);
