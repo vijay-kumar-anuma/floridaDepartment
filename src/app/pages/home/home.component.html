@@ -125,9 +125,15 @@
 
   <!-- DOWNLOAD BUTTON -->
   <div class="d-flex justify-content-end mt-2">
-    <button class="btn btn-success px-4" (click)="downloadAsExcel()">
+    <!-- <button class="btn btn-success px-4" (click)="downloadAsExcel()">
       <i class="bi bi-download"></i> Download Packets
-    </button>
+    </button> -->
+
+    <button class="btn btn-download"
+        (click)="downloadPDF()">
+    Download
+</button>
+
   </div>
 
   <a href="#" class="text-primary mt-2 d-block">View Packets Previously Downloaded</a>

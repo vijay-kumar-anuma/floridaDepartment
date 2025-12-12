@@ -26,7 +26,7 @@ export class HomeComponent {
 
 
   packets = [
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl:'src/assets/pdfs' },
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '12/8/2025', served: '12/9/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '12/10/2025', served: '12/11/2025', selected: false },
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
@@ -259,15 +259,45 @@ export class HomeComponent {
     saveAs(blob, fileName);
   }
 
-  onFileSelected(event: any, fileUploadModal: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      this.selectedFile = file;
-      this.fileName = file.name;
-    }
+  // onFileSelected(event: any, fileUploadModal: any) {
+  //   const file: File = event.target.files[0];
+  //   if (file) {
+  //     this.selectedFile = file;
+  //     this.fileName = file.name;
+  //   }
 
-    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' })
+  //   this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' })
+  // }
+
+
+  onFileSelected(event: any, fileUploadModal: any) {
+  const file: File = event.target.files[0];
+
+  if (file) {
+    this.selectedFile = file;
+    this.fileName = file.name;
+
+    // Create a browser URL for PDF preview / download
+    const pdfURL = URL.createObjectURL(file);
+
+    // Add record to table
+    this.packets.unshift({
+      sop: this.manualRecord.sop || 'Manual Entry',
+      case: this.manualRecord.case || 'Manual Entry',
+      plaintiff: this.manualRecord.plaintiff || 'Manual Entry',
+      company: this.manualRecord.company || 'Manual Entry',
+      received: new Date().toLocaleDateString('en-US'),
+      served: '',
+      selected: false,
+      pdfurl: pdfURL
+    });
+
+    this.updateDisplayedPackets();
   }
+
+  this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' });
+}
+
 
   upload() {
     if (!this.selectedFile) return;
@@ -301,6 +331,7 @@ export class HomeComponent {
         company: '',
         received: '',
         served: '',
+        
       };
     }
 
@@ -344,5 +375,19 @@ export class HomeComponent {
 
     return null;
   }
+
+ downloadPDF() {
+  if (!this.selectedFile) {
+    console.error('No file selected for download');
+    return;
+  }
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(this.selectedFile); 
+  link.download = this.selectedFile.name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(link.href), 100);
+}
+
+
 
 }
