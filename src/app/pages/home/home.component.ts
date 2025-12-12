@@ -4,6 +4,7 @@ import { saveAs } from 'file-saver';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Router } from '@angular/router';
+import JSZip from 'jszip';
 
 @Component({
   selector: 'app-home',
@@ -26,7 +27,7 @@ export class HomeComponent {
 
 
   packets = [
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl:'src/assets/pdfs' },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false, pdfurl: 'src/assets/pdfs' },
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '12/8/2025', served: '12/9/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '12/10/2025', served: '12/11/2025', selected: false },
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
@@ -143,9 +144,13 @@ export class HomeComponent {
       this.updateDisplayedPackets();
     }
   }
+  updateDisplayedPackets(applyLast4Days: boolean = true) {
+    // If applyLast4Days = true → filter to last 4 days
+    // If false → keep whatever is already filtered (search results)
 
-  updateDisplayedPackets() {
-    this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
+    if (applyLast4Days) {
+      this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
+    }
 
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
@@ -153,6 +158,7 @@ export class HomeComponent {
     this.displayedPackets = this.filterDisplayedPackets.slice(start, end);
     this.totalPages = Math.ceil(this.filterDisplayedPackets.length / this.itemsPerPage);
   }
+
 
 
 
@@ -184,9 +190,10 @@ export class HomeComponent {
 
     this.filterDisplayedPackets = filtered;
     this.currentPage = 1;
-    this.totalPages = Math.ceil(filtered.length / this.itemsPerPage);
-    this.displayedPackets = filtered.slice(0, this.itemsPerPage);
+
+    this.updateDisplayedPackets(false);  // <-- IMPORTANT
   }
+
   updateDates(data: any[]) {
     const today = new Date();
     for (let i = 0; i < data.length; i++) {
@@ -218,16 +225,15 @@ export class HomeComponent {
   }
   ngOnInit() {
     this.packets = this.updateDates([...this.packets]);  // only once!
-    this.updateDisplayedPackets();
+    this.updateDisplayedPackets(true);
   }
 
   clear() {
     this.searchParams.reset();
     this.currentPage = 1;
-    this.filterDisplayedPackets = this.filterLast4Days([...this.packets]);
-    this.updateDisplayedPackets();
+
+    this.updateDisplayedPackets(true);
   }
-  // Select All Toggle
   toggleSelectAll(event: any) {
     const checked = event.target.checked;
     this.displayedPackets.forEach(p => p.selected = checked);
@@ -246,75 +252,45 @@ export class HomeComponent {
       bookType: 'xlsx',
       type: 'array'
     });
-
     const blob = new Blob([excelBuffer], {
       type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
-
     const today = new Date();
     const formattedDate = today.toISOString().split('T')[0];
-
     const fileName = `data_${formattedDate}.xlsx`;
-
     saveAs(blob, fileName);
   }
-
-  // onFileSelected(event: any, fileUploadModal: any) {
-  //   const file: File = event.target.files[0];
-  //   if (file) {
-  //     this.selectedFile = file;
-  //     this.fileName = file.name;
-  //   }
-
-  //   this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' })
-  // }
-
-
   onFileSelected(event: any, fileUploadModal: any) {
-  const file: File = event.target.files[0];
-
-  if (file) {
-    this.selectedFile = file;
-    this.fileName = file.name;
-
-    // Create a browser URL for PDF preview / download
-    const pdfURL = URL.createObjectURL(file);
-
-    // Add record to table
-    this.packets.unshift({
-      sop: this.manualRecord.sop || 'Manual Entry',
-      case: this.manualRecord.case || 'Manual Entry',
-      plaintiff: this.manualRecord.plaintiff || 'Manual Entry',
-      company: this.manualRecord.company || 'Manual Entry',
-      received: new Date().toLocaleDateString('en-US'),
-      served: '',
-      selected: false,
-      pdfurl: pdfURL
-    });
-
-    this.updateDisplayedPackets();
+    const file: File = event.target.files[0];
+    if (file) {
+      this.selectedFile = file;
+      this.fileName = file.name;
+      const pdfURL = URL.createObjectURL(file);
+      this.packets.unshift({
+        sop: this.manualRecord.sop || 'Manual Entry',
+        case: this.manualRecord.case || 'Manual Entry',
+        plaintiff: this.manualRecord.plaintiff || 'Manual Entry',
+        company: this.manualRecord.company || 'Manual Entry',
+        received: new Date().toLocaleDateString('en-US'),
+        served: '',
+        selected: false,
+        pdfurl: pdfURL
+      });
+      this.updateDisplayedPackets();
+    }
+    this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' });
   }
-
-  this.modalRef = this.modalService.open(fileUploadModal, { size: 'xl', backdrop: 'static' });
-}
-
 
   upload() {
     if (!this.selectedFile) return;
-
     const formData = new FormData();
     formData.append('file', this.selectedFile);
-
-    // Example POST request — replace with service
     console.log('Uploading...', this.fileName);
 
-    // this.http.post('your-upload-url', formData).subscribe(...)
   }
 
   addRecords() {
-
     const recordsToInsert = [];
-
     // If user manually entered data, push it
     if (this.manualRecord.sop || this.manualRecord.case || this.manualRecord.plaintiff) {
       const newManualRecord = {
@@ -331,7 +307,7 @@ export class HomeComponent {
         company: '',
         received: '',
         served: '',
-        
+
       };
     }
 
@@ -376,18 +352,47 @@ export class HomeComponent {
     return null;
   }
 
- downloadPDF() {
-  if (!this.selectedFile) {
-    console.error('No file selected for download');
-    return;
+  downloadPDF() {
+    if (!this.selectedFile) {
+      console.error('No file selected for download');
+      return;
+    }
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(this.selectedFile);
+    link.download = this.selectedFile.name;
+    link.click();
+    setTimeout(() => URL.revokeObjectURL(link.href), 100);
   }
-  const link = document.createElement('a');
-  link.href = URL.createObjectURL(this.selectedFile); 
-  link.download = this.selectedFile.name;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(link.href), 100);
-}
 
 
+
+
+  downloadSelectedAsZip() {
+    const selected = this.packets.filter(x => x.selected);
+
+    if (selected.length === 0) {
+      alert("No packets selected");
+      return;
+    }
+
+    const zip = new JSZip();
+    const folder = zip.folder("documents");
+
+    const downloads = selected.map(item => {
+      const pdfPath = `assets/pdfs/${item.sop}.pdf`;
+
+      return fetch(pdfPath)
+        .then(res => res.blob())
+        .then(blob => {
+          folder!.file(`${item.sop}.pdf`, blob);
+        });
+    });
+
+    Promise.all(downloads).then(() => {
+      zip.generateAsync({ type: "blob" }).then(content => {
+        saveAs(content, "selected_files.zip");
+      });
+    });
+  }
 
 }
