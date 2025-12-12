@@ -122,17 +122,9 @@
       </li>
     </ul>
   </nav>
-
-  <!-- DOWNLOAD BUTTON -->
   <div class="d-flex justify-content-end mt-2">
-    <!-- <button class="btn btn-success px-4" (click)="downloadAsExcel()">
-      <i class="bi bi-download"></i> Download Packets
-    </button> -->
-
-    <button class="btn btn-download"
-        (click)="downloadPDF()">
-    Download
-</button>
+    <button class="btn btn-download px-4 btn btn-success" (click)="downloadPDF()"> Download
+    </button>
 
   </div>
 
@@ -141,15 +133,12 @@
   <div class="my-3">
     <label class="form-label me-3">Upload File</label>
 
-    <!-- Hidden native file input -->
     <input type="file" #fileInput class="d-none" (change)="onFileSelected($event, fileUploadModal)" />
 
-    <!-- Custom button using ng-bootstrap styling -->
     <button class="btn btn-primary" (click)="fileInput.click()">
       Choose File
     </button>
 
-    <!-- Display selected filename -->
     <span class="ms-3" *ngIf="fileName">
       <i class="bi bi-paperclip"></i> {{ fileName }}
     </span>

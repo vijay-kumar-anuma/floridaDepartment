@@ -27,9 +27,27 @@ export class HomeComponent {
 
 
   packets = [
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false, pdfurl: 'src/assets/pdfs' },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '12/8/2025', served: '12/9/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '12/10/2025', served: '12/11/2025', selected: false },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false, pdfurl: 'src/assets/pdfs/BI Suit C32478.pdf' },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '12/8/2025', served: '12/9/2025', selected: false ,pdfurl:'src/assets/pdfs/Claim C9638.pdf'},
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '12/10/2025', served: '12/11/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C8657 no Clm or Pol, Hicfa exhibit.pdf' },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/BI Suit C32478.pdf' },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C11549.pdf' },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C12781.pdf' },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C13704.pdf' },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C14653.pdf' },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C16607 injunctive relief, dec, no clm, no pol.pdf'},
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C17705.pdf' },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C17764 dec, rogs, RFP, RFA.pdf' },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C20621.pdf' },
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false ,pdfurl: 'src/assets/pdfs/Suit C20902.pdf'},
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C21777.pdf' },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C22179.pdf'},
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/Suit C24365 #1.pdf' },
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assetspdfsSuit C24365 no clm, no pol, RFP, RFA Rogs.pdf' },
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false ,pdfurl: 'src/assets/pdfs/Suit C26731.pdf'},
+    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false,pdfurl: 'src/assets/pdfs/BI Suit C32478.pdf'},
+    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false ,pdfurl: 'src/assets/pdfs/BI Suit C32478.pdf'},
+    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false ,pdfurl: 'src/assets/pdfs/BI Suit C32478.pdf'},
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
@@ -52,43 +70,8 @@ export class HomeComponent {
     { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: 'H. MIAMI MEDICAL CEN...', company: 'RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279440', case: '2025-181462-CC-25', plaintiff: 'XYZ Corp', company: 'ABC Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-    { sop: '25-000279441', case: '2025-181463-CC-25', plaintiff: 'ABC Corp', company: 'XYZ Company', received: '11/24/2025', served: '11/25/2025', selected: false },
-  ];
 
+  ];
 
   xlspackets = [
     { sop: '25-000279439', case: '2025-181461-CC-25', plaintiff: '123 H. MIAMI MEDICAL CEN...', company: '123 RESPONSIVE AUTO INS...', received: '11/24/2025', served: '11/25/2025', selected: false },
@@ -102,12 +85,8 @@ export class HomeComponent {
   currentPage = 1;
   itemsPerPage = 10;
   totalPages = 0;
-
   displayedPackets: any[] = [];
   filterDisplayedPackets: any[] = [];
-
-
-
   selectedFile: File | null = null;
   fileName: string = '';
 
@@ -158,41 +137,34 @@ export class HomeComponent {
     this.displayedPackets = this.filterDisplayedPackets.slice(start, end);
     this.totalPages = Math.ceil(this.filterDisplayedPackets.length / this.itemsPerPage);
   }
-
-
-
-
-
   getPages(): number[] {
     return Array(this.totalPages).fill(0).map((_, i) => i + 1);
   }
 
-  filterTable() {
-    const f = this.searchParams.value;
+ filterTable() {
+  const f = this.searchParams.value;
+  let filtered = this.filterLast4Days([...this.packets]);
 
-    let filtered = this.filterLast4Days([...this.packets]);
+  const filterReceived = this.parseAnyDate(f.received);
+  const filterServed = this.parseAnyDate(f.served);
 
-    const filterReceived = this.parseAnyDate(f.received);
-    const filterServed = this.parseAnyDate(f.served);
+  filtered = filtered.filter(item => {
+    const receivedDate = this.parseAnyDate(item.received);
+    const servedDate = this.parseAnyDate(item.served);
+    return (
+      (!f.case || item.case.toLowerCase().includes(f.case.toLowerCase())) &&
+      (!f.plaintiff || item.plaintiff.toLowerCase().includes(f.plaintiff.toLowerCase())) &&
+      (!f.company || item.company.toLowerCase().includes(f.company.toLowerCase())) &&
+      (!filterReceived || (receivedDate && receivedDate >= filterReceived)) &&
+      (!filterServed || (servedDate && servedDate <= filterServed))
+    );
+  });
 
-    filtered = filtered.filter(item => {
-      const receivedDate = this.parseAnyDate(item.received);
-      const servedDate = this.parseAnyDate(item.served);
+  this.filterDisplayedPackets = filtered;
+  this.currentPage = 1;
+  this.updateDisplayedPackets(false); // keep filtered results
+}
 
-      return (
-        (!f.case || item.case.toLowerCase().includes(f.case.toLowerCase())) &&
-        (!f.plaintiff || item.plaintiff.toLowerCase().includes(f.plaintiff.toLowerCase())) &&
-        (!f.company || item.company.toLowerCase().includes(f.company.toLowerCase())) &&
-        (!filterReceived || (receivedDate && receivedDate >= filterReceived)) &&
-        (!filterServed || (servedDate && servedDate <= filterServed))
-      );
-    });
-
-    this.filterDisplayedPackets = filtered;
-    this.currentPage = 1;
-
-    this.updateDisplayedPackets(false);  // <-- IMPORTANT
-  }
 
   updateDates(data: any[]) {
     const today = new Date();
@@ -236,30 +208,38 @@ export class HomeComponent {
   }
   toggleSelectAll(event: any) {
     const checked = event.target.checked;
-    this.displayedPackets.forEach(p => p.selected = checked);
+    this.filterDisplayedPackets.forEach(p => p.selected = checked);
 
   }
-
   downloadAsExcel() {
-    const selectedXlsRecords = this.displayedPackets.filter(x => x.selected);
-    const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selectedXlsRecords);
-    const workbook: XLSX.WorkBook = {
-      Sheets: { 'Data': worksheet },
-      SheetNames: ['Data']
-    };
+  // Use filtered list, not original packets
+  const selected = this.filterDisplayedPackets.filter(x => x.selected);
 
-    const excelBuffer: any = XLSX.write(workbook, {
-      bookType: 'xlsx',
-      type: 'array'
-    });
-    const blob = new Blob([excelBuffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
-    const today = new Date();
-    const formattedDate = today.toISOString().split('T')[0];
-    const fileName = `data_${formattedDate}.xlsx`;
-    saveAs(blob, fileName);
+  if (selected.length === 0) {
+    alert("No records selected!");
+    return;
   }
+
+  const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(selected);
+  const workbook: XLSX.WorkBook = {
+    Sheets: { 'Data': worksheet },
+    SheetNames: ['Data']
+  };
+
+  const excelBuffer: any = XLSX.write(workbook, {
+    bookType: 'xlsx',
+    type: 'array'
+  });
+
+  const blob = new Blob([excelBuffer], {
+    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  });
+
+  const today = new Date();
+  const fileName = `data_${today.toISOString().split('T')[0]}.xlsx`;
+  saveAs(blob, fileName);
+}
+
   onFileSelected(event: any, fileUploadModal: any) {
     const file: File = event.target.files[0];
     if (file) {
@@ -360,39 +340,34 @@ export class HomeComponent {
     const link = document.createElement('a');
     link.href = URL.createObjectURL(this.selectedFile);
     link.download = this.selectedFile.name;
-    link.click();
-    setTimeout(() => URL.revokeObjectURL(link.href), 100);
+    console.log("download")
+     link.click();
+     setTimeout(() => URL.revokeObjectURL(link.href), 100);
   }
 
+async downloadSelectedPDFs() {
+  const zip = new JSZip();
 
+  const selected = this.filterDisplayedPackets.filter(p => p.selected && p.pdfurl);
 
+  if (selected.length === 0) {
+    alert("No PDFs selected!");
+    return;
+  }
 
-  downloadSelectedAsZip() {
-    const selected = this.packets.filter(x => x.selected);
-
-    if (selected.length === 0) {
-      alert("No packets selected");
-      return;
+  for (const item of selected) {
+    try {
+      const fileData = await fetch(item.pdfurl).then(res => res.blob());
+      zip.file(`${item.sop}.pdf`, fileData);
+    } catch (err) {
+      console.error(`Failed to fetch PDF for ${item.sop}`, err);
     }
-
-    const zip = new JSZip();
-    const folder = zip.folder("documents");
-
-    const downloads = selected.map(item => {
-      const pdfPath = `assets/pdfs/${item.sop}.pdf`;
-
-      return fetch(pdfPath)
-        .then(res => res.blob())
-        .then(blob => {
-          folder!.file(`${item.sop}.pdf`, blob);
-        });
-    });
-
-    Promise.all(downloads).then(() => {
-      zip.generateAsync({ type: "blob" }).then(content => {
-        saveAs(content, "selected_files.zip");
-      });
-    });
   }
+
+  zip.generateAsync({ type: 'blob' }).then(content => {
+    saveAs(content, "selected_files.zip");
+  });
+}
+
 
 }
